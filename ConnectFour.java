@@ -1,39 +1,58 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class ConnectFour {
     public static void main(String[] args) {
-        char[] colours = new char[2];
-        if (args.length>=2 && args[0].length() == 1 && args[1].length() == 1){
-            colours[0] = args[0].charAt(0);
-            colours[1] = args[1].charAt(0);
+        int humanPlayerTurn;
+        char difficulty;
+        if (args.length>=1 && (Integer.valueOf(args[0]) == 1 || Integer.valueOf(args[0]) == 0)){
+            humanPlayerTurn = Integer.valueOf(args[0]);
         } else {
-            colours[0] = 'r';
-            colours[1] = 'y';
+            Random r = new Random();
+            humanPlayerTurn = r.nextInt(2);
+        }
+        if (args.length>=2 && (args[1].charAt(0) == 'e' || args[1].charAt(0) == 'h')){
+            difficulty = args[1].charAt(0);
+        } else {
+            difficulty = 'h';
         }
 
+        char[] colours = new char[] {'◌', '●'};
         ConnectFour game;
         String response;
         do{
-            game = new ConnectFour(colours);
+            game = new ConnectFour(colours, humanPlayerTurn, difficulty);
             game.playGame();
             response = IOstatic.getStringInput("Play Again? [y/n]",
                 new ArrayList<String>(Arrays.asList("y", "n")));
         } while (!response.equals("n"));
     }
     
-    private Player[] players = new Player[2];
+    private Player[] players = new Player[2]; //polymorphism
     private Gamestate gamestate;
 
-    public ConnectFour(char[] colours){
+    public ConnectFour(char[] colours, int humanPlayer, char difficulty){
         gamestate = new Gamestate();
-        players[0] = new Human(colours[0]);
-        players[1] = new AI(colours[1], colours[0]);      
+        players[0] = new Human(colours[0]); //polymorphism
+
+        if (difficulty=='h'){
+            players[1] = new HardAI(colours[1], colours[0]); //polymorphism
+        }
+        else {
+            players[1] = new EasyAI(colours[1], colours[0]); //polymorphism
+        }
+
+        printIntro();
+
+        //Performs an AI turn to offset the playing of the first turn if the ai is to be first
+        if (humanPlayer==1){
+            playerTurn(players[1]);
+        }
 	}
 
     public void playGame(){
         boolean gameOver = false;
-        printIntro();
         gamestate.printBoard();
         do{
             for (Player p : players){
@@ -49,17 +68,16 @@ public class ConnectFour {
     }
 
     private boolean playerTurn(Player player){
-        int move = player.getInput(gamestate);
-        gamestate.placeCounter(player.getColour(),move);
-        return gamestate.isGameEnd(player.getColour());
+        int move = player.getInput(gamestate);  //polymorphism
+        gamestate.placeCounter(move, player.getColour());
+        return gamestate.isWin(player.getColour()) || gamestate.isFull();
     }
 
     private void printIntro(){
         System.out.println("Welcome to Connect 4");
-		System.out.println("There are 2 players red and yellow");
-		System.out.println("Player 1 is Red, Player 2 is Yellow");
+		System.out.println("There are 2 players Black and White");
+		System.out.println("The first player is assigned randomly");
 		System.out.println("To play the game type in the number of the column you want to drop you counter in");
-		System.out.println("A player wins by connecting 4 counters in a row - vertically, horizontally or diagonally");
-		System.out.println("");
+		System.out.println("A player wins by connecting 4 counters in a row - vertically, horizontally or diagonally\n");
     }
 }

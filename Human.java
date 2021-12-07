@@ -9,7 +9,7 @@ public class Human extends Player{
 
     public Human(char colour){
         this.colour = colour;
-        name = "You have";
+        name = "You";
         input = new BufferedReader(new InputStreamReader(System.in));
     }
 

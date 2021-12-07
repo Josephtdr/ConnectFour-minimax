@@ -1,10 +1,8 @@
-public class Player {
+abstract class Player {
     protected char colour;
     protected String name;
 
-    public int getInput(Gamestate gamestate){
-        return gamestate.getPlayableColumns().get(0);
-    }
+    public abstract int getInput(Gamestate gamestate);
 
     public String getName(){
         return name;

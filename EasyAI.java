@@ -1,11 +1,11 @@
 import java.util.Random;
 import java.util.ArrayList;
 
-public class AI extends Player {
+public class EasyAI extends Player {
     private char opColour;
 
-    public AI(char colour, char opColour){
-        name = "The AI has";
+    public EasyAI(char colour, char opColour){
+        name = "Easy AI";
         this.colour = colour;
         this.opColour = opColour;
     }
@@ -29,7 +29,7 @@ public class AI extends Player {
         }
 
         int move = colSelectionFrom.get(r.nextInt(colSelectionFrom.size()));
-        System.out.printf("Ai Chose %d.\n", (move+1));
+        System.out.printf("Ai played %d.\n", (move+1));
         return move;
     }
 

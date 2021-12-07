@@ -17,11 +17,10 @@ public class IOstatic{
                 }
             }
             catch(IOException e){
-                System.out.println("Please don't error me (IO e).");
+                System.out.println("Please don't error me (IO error).");
             }
             catch(IllegalArgumentException e){
-                //TODO: Print permitables
-                System.out.println("Please input a valid String.");
+                System.out.println("Please input a valid String " + permitables + ".");
             }
         }
         return userInput;
