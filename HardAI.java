@@ -13,7 +13,7 @@ public class HardAI extends Player{
         int bestScore = Integer.MIN_VALUE; 
         int score = 0;
         int move = 8;
-        int depth = 4;
+        int depth = 8;
         for (int col : orderColumns(gs.getPlayableColumns())){
             
             gs.placeCounter(col, colour);
@@ -103,10 +103,10 @@ public class HardAI extends Player{
         int score = 0;
         char[][] board = gs.getBoard();
         if (gs.isWin(colour)){
-            score = 50;
+            score = Integer.MAX_VALUE - (maxdepth - depth);
         }
         else if (gs.isWin(opColour)){
-            score = -50;
+            score = Integer.MIN_VALUE + (maxdepth - depth);
         }
         else if (gs.isFull()){
             score = 0;
