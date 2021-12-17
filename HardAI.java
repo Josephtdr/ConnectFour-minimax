@@ -11,6 +11,7 @@ import java.util.Collections;
  */
 public class HardAI extends Player{
     private char opColour;
+    private int maxDepth;
 
     public HardAI(char colour, char opColour){
         name = "Hard AI";
@@ -27,9 +28,9 @@ public class HardAI extends Player{
      * @return int representing the column of the best move
      */
     public int getInput(Gamestate gs){
-        int depth = 7;
+        maxDepth = 7;
 
-        int bestMove = minimax(gs, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true)[1];
+        int bestMove = minimax(gs, maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, true)[1];
 
         System.out.printf("Ai played %d.\n", (bestMove+1));
         return bestMove;
@@ -64,7 +65,7 @@ public class HardAI extends Player{
      */
     private int[] minimax(Gamestate gs, int depth, int alpha, int beta, boolean isMaximiser){
         if (isTerminal(gs) || depth == 0){
-            return new int[] {getScore(gs), -1};
+            return new int[] {getScore(gs, depth), -1};
         }
 
         if (isMaximiser){
@@ -127,7 +128,7 @@ public class HardAI extends Player{
             int col = possibleMoves.get(i).getColumn();
 
             gs.placeCounter(col, curColour);
-            int score = getScore(gs);
+            int score = getScore(gs, 0);
             gs.unplaceCounter(col);
 
             //Want to sort by ascending order if isMaximiser = false, defaulting sorting is descending
@@ -148,21 +149,24 @@ public class HardAI extends Player{
     }
 
     /**
-     * Calculates the score representation for a given gamestate (board)
-     * 
+     * Calculates the score representation for a given gamestate (board),
+     * offset by depth to favour winning sooner.
      * @param gs
      *      The current gamestate
+     * @param depthRemaining
+     *      The remaining depth in the minimax function until it stops searching
      * @return int representing the score of the current board
      */
-    private int getScore(Gamestate gs){
+    private int getScore(Gamestate gs, int depthRemaining){
         int score = 0;
         char[][] board = gs.getBoard();
+        int depth = this.maxDepth - depthRemaining;
 
         if (gs.isWin(colour)){
-            score = Integer.MAX_VALUE;
+            score = Integer.MAX_VALUE - depth;
         }
         else if (gs.isWin(opColour)){
-            score = Integer.MIN_VALUE;
+            score = Integer.MIN_VALUE + depth;
         }
         else if (gs.isFull()){
             score = 0;
@@ -172,6 +176,8 @@ public class HardAI extends Player{
             score += scoreHorizontal(board, colour);
             score += scoreVertical(board, colour);
             score += scoreDiaganol(board, colour);
+
+            score -= depth;
         }
         return score;
     }
