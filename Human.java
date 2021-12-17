@@ -30,6 +30,7 @@ public class Human extends Player{
 		
         while(move < 1 || 7 < move){
             try{
+                System.out.print("Please Enter Column: ");
                 userInput = input.readLine();
                 move = Integer.parseInt(userInput);
                 
