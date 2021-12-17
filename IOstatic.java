@@ -5,6 +5,14 @@ import java.util.ArrayList;
 
 public class IOstatic{
 
+    /**
+     * Gets a user input with a constrained set of permitable values.
+     * @param prompt
+     *      String to display to the user to prompt them for an input
+     * @param permitables
+     *      The legal strings that their response can be 
+     * @return String input by the user, must be contained in permitables
+     */
     public static String getStringInput(String prompt, ArrayList<String> permitables){
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         System.out.println(prompt);
@@ -17,7 +25,7 @@ public class IOstatic{
                 }
             }
             catch(IOException e){
-                System.out.println("Please don't error me (IO error).");
+                System.out.println("IOExeption" + e);
             }
             catch(IllegalArgumentException e){
                 System.out.println("Please input a valid String " + permitables + ".");

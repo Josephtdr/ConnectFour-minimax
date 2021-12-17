@@ -1,113 +1,143 @@
 import java.util.ArrayList;
 
+/**
+ * Wholly contianed gamestate class, contains all rules and peramaters pertaining to the state of play
+ */
 public class Gamestate {
-    /* 
-    Wholly contianed gamestate class, contains all rules and peramaters pertaining 
-    to the state of play. 
-    */
-    private int[] pointers = new int[7];
+    private int[] pointers = new int[7]; //To represent the next playable row for each respective column
     private char[][] board = new char[7][6]; //[col][row]
+    private int numColumns = board.length;
+    private int numRows = board[0].length;
 
+    /**
+     * Initialises the board to be all empty space and the pointers to be starting at 6
+     * indicating the bottom of each column 
+     */
     public Gamestate(){
-        for(int col = 0; col < board.length; col++){
-            pointers[col] = board[0].length - 1;
-            for(int row = 0; row < board[0].length; row++){
+        for(int col = 0; col < numColumns; col++){
+            pointers[col] = numRows - 1;
+            for(int row = 0; row < numRows; row++){
                 board[col][row] = ' ';
             } 
         }
     }
 
+    /**
+     * Places a given counter (char) in a given column, 
+     * and updates the pointer for that respective column.
+     * @param column
+     *      the column to place the counter in.
+     * @param colour
+     *      the char to be placed on the board.
+     */
     public void placeCounter(int column, char colour){
         board[column][pointers[column]] = colour;
         pointers[column]--;
     }
 
+    /**
+     * the reverse action of {@link placeCounter}
+     * @param column
+     *      the column to reset the top piece to empty in.
+     */
     public void unplaceCounter(int column){
         pointers[column]++;
         board[column][pointers[column]] = ' ';
     }
 
-    public String getGameEndString(Player p){
-        if(isFull()){
-            return "Board full, thus draw!";
-        }
-        else {
-            return String.format("%s Won!!", p.getName());
-        }
-    }
-
+    /**
+     * @return true if there are no remaining possible columns to play, false otherwise
+     */
     public boolean isFull(){
-        for (int col = 0; col < board.length; col++){
-            if(pointers[col] >= 0){
-                return false;
-            }
+        if (getPossibleColumns().size()==0){
+            return true;
         }
-        return true;
+        return false;
     }
 
+    /**
+     * Used to check if a given colour has won the game. 
+     * @param colour
+     *      The char used for finding four in a row.
+     * @return true if four in a row exists on the board for the given char, false otherwise
+     */
     public boolean isWin(char colour){
         return  isVerticleWin(colour) || isHorizontalWin(colour) || isDiaganolWin(colour);
     }
 
+    /**
+     * @param colour
+     *      The char used for finding four in a row.
+     * @return true if four in a row exists vertically on the board for the given char, false otherwise
+     */
     private boolean isVerticleWin(char colour){
-        for(int row=0; row<board[0].length-3; row++){
-            for (int col=0; col<board.length; col++){
+        for(int row=0; row < numRows-3; row++){
+            for (int col=0; col < numColumns; col++){
                 if (board[col][row]==colour &&
                     board[col][row+1]==colour &&
                     board[col][row+2]==colour &&
                     board[col][row+3]==colour){
                     return true;
-                    //TODO: Return index of bottommost winning chip
                 }
             }
         }
         return false;
     }
 
+    /**
+     * @param colour
+     *      The char used for finding four in a row.
+     * @return true if four in a row exists horizontally on the board for the given char, false otherwise
+     */
     private boolean isHorizontalWin(char colour){
-        for(int row=0; row<board[0].length; row++){
-            for (int col=0; col<board.length-3; col++){
+        for(int row=0; row < numRows; row++){
+            for (int col=0; col < numColumns-3; col++){
                 if (board[col][row]==colour &&
                     board[col+1][row]==colour &&
                     board[col+2][row]==colour &&
                     board[col+3][row]==colour){
                     return true;
-                    //TODO: Return index of leftmost winning chip
                 }
             }
         }
         return false;
     }
 
+    /**
+     * @param colour
+     *      The char used for finding four in a row.
+     * @return true if four in a row exists diagonally on the board for the given char, false otherwise
+     */
     private boolean isDiaganolWin(char colour){
-        for(int row = 0; row < board[0].length - 3; row++){ 
-            for (int col = 0; col < board.length - 3; col++){
+        for(int row = 0; row < numRows - 3; row++){ 
+            for (int col = 0; col < numColumns - 3; col++){
                 if (board[col][row+3]==colour &&
                     board[col+1][row+2]==colour &&
                     board[col+2][row+1]==colour &&
                     board[col+3][row]==colour){
                     return true;
-                    //TODO: Return index of  winning chip
                 }
             }
         }
-        for(int row = 0; row < board[0].length - 3; row++){ 
-            for (int col = 0; col < board.length - 3; col++){
+        for(int row = 0; row < numRows - 3; row++){ 
+            for (int col = 0; col < numColumns - 3; col++){
                 if (board[col][row]==colour &&
                     board[col+1][row+1]==colour &&
                     board[col+2][row+2]==colour &&
                     board[col+3][row+3]==colour){
                     return true;
-                    //TODO: Return index of  winning chip
                 }
             }
         }
         return false;
     }
 
+    /**
+     * Prints the current board to the console for the player to see
+     */
     public void printBoard(){
-        for(int row=0; row<board[0].length; row++){
-            for (int col = 0; col < board.length; col++){
+        for(int row=0; row < numRows; row++){
+            for (int col = 0; col < numColumns; col++){
                 System.out.printf("| %c ", board[col][row]);
             }
             System.out.println("|");
@@ -115,9 +145,12 @@ public class Gamestate {
         System.out.println("  1   2   3   4   5   6   7");
     }
 
-    public ArrayList<Integer> getPlayableColumns(){
+    /**
+     * @return ArrayList of ints representing the non full columns in the current gamestate 
+     */
+    public ArrayList<Integer> getPossibleColumns(){
         ArrayList<Integer> list = new ArrayList<>();
-        for (int col = 0; col < board.length; col++){
+        for (int col = 0; col < numColumns; col++){
             if(pointers[col] >= 0){
                 list.add(col);
             }
@@ -125,11 +158,21 @@ public class Gamestate {
         return list;
     }
 
-    public char[][] getBoard(){
-        return board;
+    /**
+     * Move objects also contain a score peramater so can be used for sorting in the hard ai
+     * @return ArrayList of Moves representing the not full columns in the current gamestate 
+     */
+    public ArrayList<Move> getPossibleMoves(){
+        ArrayList<Move> list = new ArrayList<>();
+        for (int col = 0; col < numColumns; col++){
+            if(pointers[col] >= 0){
+                list.add(new Move(col));
+            }
+        }
+        return list;
     }
 
-    public int[] getPointers(){
-        return pointers;
+    public char[][] getBoard() {
+        return board;
     }
 }
