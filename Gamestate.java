@@ -73,17 +73,13 @@ public class Gamestate {
      * @return true if four in a row exists vertically on the board for the given char, false otherwise
      */
     private boolean isVerticleWin(char colour){
-        for(int row=0; row < numRows-3; row++){
-            for (int col=0; col < numColumns; col++){
-                if (board[col][row]==colour &&
-                    board[col][row+1]==colour &&
-                    board[col][row+2]==colour &&
-                    board[col][row+3]==colour){
-                    return true;
-                }
-            }
-        }
-        return false;
+        return IntStream.range(0, numColumns)
+            .anyMatch(col -> IntStream.range(0, numRows - 3)
+                            .anyMatch(row -> 
+                                board[col][row]==colour &&
+                                board[col][row+1]==colour &&
+                                board[col][row+2]==colour &&
+                                board[col][row+3]==colour));
     }
 
     /**
@@ -92,17 +88,13 @@ public class Gamestate {
      * @return true if four in a row exists horizontally on the board for the given char, false otherwise
      */
     private boolean isHorizontalWin(char colour){
-        for(int row=0; row < numRows; row++){
-            for (int col=0; col < numColumns-3; col++){
-                if (board[col][row]==colour &&
-                    board[col+1][row]==colour &&
-                    board[col+2][row]==colour &&
-                    board[col+3][row]==colour){
-                    return true;
-                }
-            }
-        }
-        return false;
+        return IntStream.range(0, numColumns - 3)
+            .anyMatch(col -> IntStream.range(0, numRows)
+                            .anyMatch(row -> 
+                                board[col][row]==colour &&
+                                board[col+1][row]==colour &&
+                                board[col+2][row]==colour &&
+                                board[col+3][row]==colour));
     }
 
     /**
@@ -111,27 +103,18 @@ public class Gamestate {
      * @return true if four in a row exists diagonally on the board for the given char, false otherwise
      */
     private boolean isDiaganolWin(char colour){
-        for(int row = 0; row < numRows - 3; row++){ 
-            for (int col = 0; col < numColumns - 3; col++){
-                if (board[col][row+3]==colour &&
-                    board[col+1][row+2]==colour &&
-                    board[col+2][row+1]==colour &&
-                    board[col+3][row]==colour){
-                    return true;
-                }
-            }
-        }
-        for(int row = 0; row < numRows - 3; row++){ 
-            for (int col = 0; col < numColumns - 3; col++){
-                if (board[col][row]==colour &&
-                    board[col+1][row+1]==colour &&
-                    board[col+2][row+2]==colour &&
-                    board[col+3][row+3]==colour){
-                    return true;
-                }
-            }
-        }
-        return false;
+        return IntStream.range(0, numColumns - 3)
+            .anyMatch(col -> IntStream.range(0, numRows - 3)
+                            .anyMatch(row -> 
+                                ((board[col][row+3]==colour &&
+                                board[col+1][row+2]==colour &&
+                                board[col+2][row+1]==colour &&
+                                board[col+3][row]==colour)
+                                ||
+                                (board[col][row]==colour &&
+                                board[col+1][row+1]==colour &&
+                                board[col+2][row+2]==colour &&
+                                board[col+3][row+3]==colour))));
     }
 
     /**

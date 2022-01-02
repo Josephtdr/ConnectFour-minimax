@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * More advanced idea for an ai implementing minimax with alpha/beta pruning 
@@ -28,7 +29,7 @@ public class HardAI extends Player{
      * @return int representing the column of the best move
      */
     public int getInput(Gamestate gs){
-        maxDepth = 10;
+        maxDepth = 7;
         float startTime = System.nanoTime();
         int bestMove = minimax(gs, maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, true)[1];
         float totalTime = (System.nanoTime() - startTime)/1000000000;
@@ -188,13 +189,9 @@ public class HardAI extends Player{
      * @return int for the score given to the passed paramaters
      */
     private int scoreMiddleColumn(char[][] board, char colour){
-        int score = 0;
-        for(int row=0; row<board[0].length; row++){
-            if (board[3][row] == colour){
-                score += 3;
-            }
-        }
-        return score;
+        return IntStream.range(0, board[0].length)
+            .map(row -> board[3][row] == colour ? 3 : 0)
+            .sum();
     }
 
     /**
