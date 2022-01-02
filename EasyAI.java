@@ -1,5 +1,6 @@
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Initial idea for an ai past playing only randomly, inherits from the player class.
@@ -25,10 +26,10 @@ public class EasyAI extends Player {
      */
     public int getInput(Gamestate gamestate){
         Random r = new Random();
-        ArrayList<Integer> columnsSelection;
+        List<Integer> columnsSelection;
 
-        ArrayList<Integer> aiWinable = getWinableColumns(gamestate, colour);
-        ArrayList<Integer> humanWinable = getWinableColumns(gamestate, opColour);
+        List<Integer> aiWinable = getWinableColumns(gamestate, colour);
+        List<Integer> humanWinable = getWinableColumns(gamestate, opColour);
 
 
         if(aiWinable.size() > 0){
@@ -52,9 +53,9 @@ public class EasyAI extends Player {
      *      The char that is being checked if it can win
      * @return the columns in which playing the given colour will lead to a victory
      */
-    private ArrayList<Integer> getWinableColumns(Gamestate gs, char colour){
-        ArrayList<Integer> possibleColumns = gs.getPossibleColumns();
-        ArrayList<Integer> winableColumns = new ArrayList<>();
+    private List<Integer> getWinableColumns(Gamestate gs, char colour){
+        List<Integer> possibleColumns = gs.getPossibleColumns();
+        List<Integer> winableColumns = new ArrayList<>();
 
         for (int col : possibleColumns){
             gs.placeCounter(col, colour);

@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.List;
 import java.lang.IndexOutOfBoundsException;
 
 /**
@@ -24,18 +24,18 @@ public class Human extends Player{
      * @return int representing the column the user wishes to play in
      */
     public int getInput(Gamestate gamestate){
-        ArrayList<Integer> possibleColumns = gamestate.getPossibleColumns();
+        List<Integer> possibleColumns = gamestate.getPossibleColumns();
 		String userInput = null;
         int move = 0;
 		
         while(move < 1 || 7 < move){
             try{
-                System.out.print("Please Enter Column: ");
+                System.out.print("> ");
                 userInput = input.readLine();
                 move = Integer.parseInt(userInput);
                 
                 if (move < 1 || move > 7){
-                    throw new IndexOutOfBoundsException("Index out of range");
+                    throw new IndexOutOfBoundsException("Index out of range!");
                 }
                 else if (!possibleColumns.contains(Integer.valueOf(move-1))){
                     throw new IllegalArgumentException("Invalid!");

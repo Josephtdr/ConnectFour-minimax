@@ -1,4 +1,6 @@
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Wholly contianed gamestate class, contains all rules and peramaters pertaining to the state of play
@@ -146,30 +148,23 @@ public class Gamestate {
     }
 
     /**
-     * @return ArrayList of ints representing the non full columns in the current gamestate 
+     * @return List of ints representing the non full columns in the current gamestate 
      */
-    public ArrayList<Integer> getPossibleColumns(){
-        ArrayList<Integer> list = new ArrayList<>();
-        for (int col = 0; col < numColumns; col++){
-            if(pointers[col] >= 0){
-                list.add(col);
-            }
-        }
-        return list;
+    public List<Integer> getPossibleColumns(){
+        return IntStream.range(0, numColumns)
+            .filter(col -> pointers[col] >= 0)
+            .boxed().toList();
     }
 
     /**
      * Move objects also contain a score peramater so can be used for sorting in the hard ai
-     * @return ArrayList of Moves representing the not full columns in the current gamestate 
+     * @return List of Moves representing the not full columns in the current gamestate 
      */
-    public ArrayList<Move> getPossibleMoves(){
-        ArrayList<Move> list = new ArrayList<>();
-        for (int col = 0; col < numColumns; col++){
-            if(pointers[col] >= 0){
-                list.add(new Move(col));
-            }
-        }
-        return list;
+    public List<Move> getPossibleMoves(){
+        return IntStream.range(0, numColumns)
+            .filter(col -> pointers[col] >= 0).boxed()
+            .map(col -> new Move(col))
+            .collect(Collectors.toList());
     }
 
     public char[][] getBoard() {

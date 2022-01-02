@@ -1,5 +1,5 @@
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * More advanced idea for an ai implementing minimax with alpha/beta pruning 
@@ -28,11 +28,12 @@ public class HardAI extends Player{
      * @return int representing the column of the best move
      */
     public int getInput(Gamestate gs){
-        maxDepth = 7;
-
+        maxDepth = 10;
+        float startTime = System.nanoTime();
         int bestMove = minimax(gs, maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, true)[1];
-
-        System.out.printf("Ai played %d.\n", (bestMove+1));
+        float totalTime = (System.nanoTime() - startTime)/1000000000;
+        System.out.printf("Ai played %d, from a depth of %d in ", (bestMove+1), maxDepth);
+        System.out.print(totalTime + "seconds\n");
         return bestMove;
     }
 
@@ -120,22 +121,16 @@ public class HardAI extends Player{
      * 
      * @return An ArrayList of the sorted possible moves.
      */
-    private ArrayList<Move> getShallowSearchColumns(Gamestate gs, boolean isMaximiser){
-        ArrayList<Move> possibleMoves = gs.getPossibleMoves();
+    private List<Move> getShallowSearchColumns(Gamestate gs, boolean isMaximiser){
         char curColour = isMaximiser ? colour : opColour;
         
-        for (int i=0; i < possibleMoves.size(); i++){ 
-            int col = possibleMoves.get(i).getColumn();
-
-            gs.placeCounter(col, curColour);
-            int score = getScore(gs, 0);
-            gs.unplaceCounter(col);
-
-            //Want to sort by ascending order if isMaximiser = false, defaulting sorting is descending
-            possibleMoves.get(i).setScore(isMaximiser ? score : -score);
-        }
-        Collections.sort(possibleMoves);
-        return possibleMoves;
+        return gs.getPossibleMoves().stream()
+            .peek(i -> {
+                gs.placeCounter(i.getColumn(), curColour);
+                i.setScore( getScore(gs, 0) * (isMaximiser ? 1 : -1) ); 
+                gs.unplaceCounter(i.getColumn());    
+            }).sorted()
+            .collect(Collectors.toList());
     }
 
     /**
