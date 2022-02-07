@@ -103,7 +103,7 @@ public class ConnectFour {
             difficulty = 'h';
         }
 
-        char[] colours = new char[] {'◌', '●'};
+        char[] colours = new char[] {'r', 'y'};
         ConnectFour game;
         String response;
         do{
